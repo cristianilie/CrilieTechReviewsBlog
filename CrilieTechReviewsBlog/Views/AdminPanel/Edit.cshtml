@@ -1,0 +1,66 @@
+﻿@model PostViewModel;
+
+@{
+    string actionName = Model.Id == 0 ? "Post" : "Edit";
+}
+<link href="~/lib/Trumbowyg-master/dist/ui/trumbowyg.min.css" rel="stylesheet" />
+<div class="container">
+
+    <form asp-action="@actionName" asp-controller="AdminPanel" method="post" enctype="multipart/form-data" class="container text-light">
+        <div class="form-group">
+            <label asp-for="Title">Title</label>
+            <input class="postInputFields" asp-for="Title" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Category">Select Category:</label>
+            <select class="form-control postInputFields" asp-for="Category">
+                @if (Model != null && Model.Categories.Count() > 0)
+                {
+                    foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="categoryLinks">
+            <a asp-controller="Category" asp-action="Edit"> New Category</a>
+            <a asp-controller="Category" asp-action="Index"> Manage Categories </a>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Summary">Summary</label>
+            <textarea asp-for="Summary" rows="2" class="postInputFields"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Body">Post Content</label>
+            <textarea id="textEditor" asp-for="Body" rows="5" class="postInputFields"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Image">Image</label>
+            <input asp-for="CurrentImage" type="hidden" />
+            <input asp-for="Image" />
+        </div>
+        <button asp-action="@actionName" asp-controller="AdminPanel" type="submit" class="btn btn-primary postEditBtn">@actionName</button>
+        @if (Model.Id != 0)
+        {
+            <button asp-action="Delete" asp-controller="AdminPanel" asp-route-id="@Model.Id" type="submit" class="btn btn-primary postEditBtn">Delete</button>
+        }
+        else
+        {
+            <button disabled asp-action="Delete" asp-controller="AdminPanel" asp-route-id="@Model.Id" type="submit" class="btn btn-primary postEditBtn">Delete</button>
+
+        }
+
+    </form>
+</div>
+@section scripts{
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/Trumbowyg-master/dist/trumbowyg.min.js"></script>
+    <script>
+        $('#textEditor').trumbowyg();
+    </script>
+}

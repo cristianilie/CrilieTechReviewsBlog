@@ -1,0 +1,13 @@
+﻿@model string;
+
+@{ }
+
+<div class="row">
+    <div class="col-md-12">
+        <h5 class="text-light">Your account is not yet confirmed, please click the button bellow to send a confirmation to your email adress.</h5>
+        <form method="post" asp-action="SendEmailConfirmation" asp-controller="Account" asp-route-mail="@Model">
+            
+            <button type="submit" class="btn btn-primary">Send Confirmation Email</button>
+        </form>
+    </div>
+</div>

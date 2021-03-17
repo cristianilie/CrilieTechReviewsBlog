@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "Administrator Panel";
+}
+
+<div class="container">
+    <h5 class="text-light">Admin Panel Options</h5>
+
+    <nav class="navbar bg-dark navbar-dark">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" asp-controller="AdminPanel" asp-action="Edit">New Post </a></li>
+            <li class="nav-item"><a class="nav-link" asp-controller="Category" asp-action="Index" >Manage Post Categories</a></li>
+            <li class="nav-item"><a class="nav-link" asp-controller="AdminPanel" asp-action="UserList" >Manage Users</a></li>
+        </ul>
+    </nav>
+</div>

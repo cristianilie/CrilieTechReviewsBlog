@@ -1,0 +1,20 @@
+﻿@model Category;
+
+@{
+    string btnName = Model.Id == 0 ? "Create" : "Update";
+}
+
+<form asp-action="Edit" asp-controller="Category" method="post" class="container text-light">
+    <div class="form-group">
+        <label asp-for="Name">Name</label>
+        <input class="postInputFields" asp-for="Name" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description">Post Content</label>
+        <textarea asp-for="Description" rows="2" class="postInputFields"></textarea>
+    </div>
+
+  
+    <button asp-action="Edit" asp-controller="Category" type="submit" class="btn btn-primary postEditBtn">@btnName</button>
+</form>

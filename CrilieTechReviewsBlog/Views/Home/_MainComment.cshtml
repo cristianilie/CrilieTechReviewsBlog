@@ -1,0 +1,27 @@
+﻿@model CommentViewModel;
+@inject SignInManager<IdentityUser> SignInManager;
+
+
+@{
+}
+
+<form method="post" asp-controller="Home" asp-action="Comment">
+    <input asp-for="PostId" type="hidden" />
+    <input asp-for="UserId" type="hidden" />
+    <input asp-for="MainCommentId" type="hidden" />
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="form-group">
+            <textarea asp-for="Message" class="commentArea text-light" maxlength="400" rows="2"></textarea>
+            <button type="submit" class="replysBtn">Reply</button>
+        </div>
+    }
+    else
+    {
+        <div class="form-group" >
+            <textarea asp-for="Message" maxlength="400" class="commentArea text-light" rows="2" disabled></textarea>
+            <button  asp-action="Login"  formmethod="get" asp-controller="Account" class="replysBtn">Log in to Comment</button>
+        </div>
+    }
+</form>

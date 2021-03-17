@@ -1,0 +1,20 @@
+﻿@model Category;
+
+@{
+    string btnName = Model == null ? "Create" : "Update";
+}
+<div class="container text-light">
+    <input type="hidden" asp-for="Id" />
+
+    <h6 class="mt-1 mb-1">Category Details</h6>
+
+    <div class="post-header no-shadow">
+        <p class="title">Category Name: @Model.Name</p>
+    </div>
+    <div class="post-body">
+        <p>Category Description:</p>
+
+        @Html.Raw(Model.Description);
+    </div>
+
+</div>

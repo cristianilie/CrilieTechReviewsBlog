@@ -1,0 +1,20 @@
+﻿@model CommentViewModel;
+
+@{
+    ViewBag.Title = " Edit Comment";
+}
+
+<form asp-action="EditComment" asp-controller="Home" method="post" class="container text-light">
+
+    <div class="form-group">
+
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="PostId" type="hidden" />
+        <input asp-for="UserId" type="hidden" />
+
+        <label asp-for="Message">Edit Comment:</label>
+        <textarea asp-for="Message" rows="2" class="postInputFields"></textarea>
+    </div>
+
+    <button  type="submit" class="btn btn-primary postEditBtn">Save</button>
+</form>

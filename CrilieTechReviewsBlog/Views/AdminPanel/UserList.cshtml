@@ -1,0 +1,44 @@
+﻿
+@model List<UserListViewModel>
+
+@{
+    ViewBag.Title = "All registered users";
+}
+
+<h5 class="text-light allUsersMargin">All Users</h5>
+
+@if (Model.Any())
+{
+
+    for (int i = 0; i < Model.Count(); i++)
+    {
+        <div class="card mb-3 bg-dark text-light">
+            <div class="card-header">
+                User Id : @Model[i].UserId
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@Model[i].UserName</h5>
+                @if (Model[i].IsBlackListed)
+                {
+                    <h6 class="text-danger">User is Blacklisted</h6>
+                }
+            </div>
+            <div class="card-footer">
+                <form method="post">
+                    <button type="submit" asp-action="DeleteUser" asp-controller="AdminPanel" asp-route-userId="@Model[i].UserId" class="btn btn-primary">Delete User</button>
+                    <button type="submit" asp-action="AddToBlackList" asp-controller="AdminPanel" asp-route-userId="@Model[i].UserId" class="btn btn-primary">Blacklist</button>
+                    <button type="submit" asp-action="RemoveFromBlackList" asp-controller="AdminPanel" asp-route-userId="@Model[i].UserId" class="btn btn-primary">Remove from Blacklist</button>
+                </form>
+            </div>
+
+        </div>
+    }
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            No users created yet
+        </div>
+    </div>
+}

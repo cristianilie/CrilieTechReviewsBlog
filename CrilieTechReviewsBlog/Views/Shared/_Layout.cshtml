@@ -1,0 +1,87 @@
+﻿@inject SignInManager<IdentityUser> SignInManager
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/lib/jquery/jquery.js"></script>
+    <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet" />
+
+    <title>@ViewBag.Title</title>
+</head>
+<body class="bg-dark">
+    <div class="container main-container">
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fontChanga">
+            <a id="blog-title" class="navbar-brand w-auto siteLogo" asp-action="Index" asp-controller="Home">Crilie Tech Reviews</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Administrator"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Index" asp-controller="AdminPanel">Admin Panel</a>
+                        </li>
+                    }
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="Index" asp-controller="Home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="About" asp-controller="Home">About</a>
+                    </li>
+
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item">
+                            <form method="post" asp-controller="Account" asp-action="Logout">
+                                <button type="submit" class="nav-link btn btn-link logInOutBtn">
+                                    Logout @User.Identity.Name
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                        </li>
+                    }
+
+                </ul>
+                <form class="form-inline my-2 my-lg-0" asp-controller="Home" asp-action="Index" method="get">
+                    <input name="search" class="form-control mr-sm-2 searchBox" type="text" placeholder="Search" aria-label="Search">
+                </form>
+            </div>
+        </nav>
+
+      
+        <div class="container">
+            @RenderBody()
+        </div>
+
+        <p class="footer text-center text-secondary">&copy; Copyright CrIlie 2077</p>
+
+    </div>
+
+
+    @if (IsSectionDefined("Scripts"))
+    {
+        @RenderSection("Scripts", required: true);
+    }
+</body>
+</html>

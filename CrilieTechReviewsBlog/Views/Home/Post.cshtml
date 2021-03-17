@@ -1,0 +1,115 @@
+﻿@model Post;
+@inject SignInManager<IdentityUser> SignInManager;
+
+@{
+    Post post = Model;
+    var basePath = Context.Request.PathBase;
+}
+
+<div class="container text-light postDetailedView">
+    @if (!string.IsNullOrEmpty(Model.Image))
+    {
+        var imagePath = $"{basePath}/Image/{Model.Image}";
+
+        <div class="postBodyContainer">
+            <a href="@imagePath" target="_blank" style="background: url(@imagePath) no-repeat center; background-size: cover; width: 100%; height:200px;margin:0.7%;"></a>
+        </div>
+    }
+
+    <div class="post-header no-shadow">
+        <h4 class="title text-center">@Model.Title</h4>
+    </div>
+
+    <div class="postBodyContainer">
+        <div class="postBodyText">
+            @Html.Raw(Model.Body);
+        </div>
+    </div>
+
+    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Administrator"))
+    {
+        <a class="float-right" asp-controller="AdminPanel" asp-action="Edit" asp-route-id="@post.Id">Edit</a>
+    }
+
+    <div class="postCommentSection">
+        <h4>Comments</h4>
+        <hr class="commentHr" />
+        @{
+            await Html.RenderPartialAsync("_MainComment", new CommentViewModel { PostId = Model.Id, MainCommentId = 0 });
+        }
+
+        @foreach (var comment in Model.MainComments)
+        {
+            <p class="comment">@comment.Message </p>
+            @if ((SignInManager.IsSignedIn(User) && (User.Identity.Name == comment.UserName)) || User.IsInRole("Administrator"))
+            {
+                <ul class="navbar-nav list-group-horizontal floatRight">
+                    <li class="nav-item ml-1">
+                        <form method="post" class="commentOptionsAlign" asp-action="DeleteComment" asp-route-commentId="@comment.Id" asp-route-postId="@Model.Id">
+                            <a class="nav-link" asp-controller="Home" asp-action="EditComment" asp-route-commentId="@comment.Id" asp-route-postId="@Model.Id"> Edit </a>
+
+                            <span class="floatRight ml-1`" id="confirmDeleteSpan_@comment.Id" style="display:none">
+                                <span>Are you sure you want to delete?</span>
+                                <button class="btn btn-link text-danger" type="submit">Yes</button>
+                                <a href="#" class="btn btn-link" onclick="confirmDelete('@comment.Id', false)">No</a>
+                            </span>
+                            <span class="nav-link" id="deleteSpan_@comment.Id">
+                                <a class="btn btn-link nav-item ml-1 text-decoration-none" onclick="confirmDelete('@comment.Id', true)">Delete</a>
+                            </span>
+                        </form>
+                    </li>
+                    <li class="nav-item ml-1 floatRight"><a class="nav-link commentInfo">[ @comment.CreationDate /  @comment.UserName.Substring(0, comment.UserName.LastIndexOf("@")) ]</a></li>
+                </ul>
+            }
+            else
+            {
+                <ul class="navbar-nav list-group-horizontal floatRight">
+                    <li class="nav-item ml-1 "><a class="nav-link commentInfo">[ @comment.CreationDate /  @comment.UserName.Substring(0, comment.UserName.LastIndexOf("@")) ]</a></li>
+                </ul>
+            }
+
+            <div class="subCommentIndentation">
+                <h5>Sub Comments</h5>
+                @foreach (var subComment in comment.SubComments)
+                {
+                    <p class="comment">@subComment.Message</p>
+                    @if ((SignInManager.IsSignedIn(User) && (User.Identity.Name == subComment.UserName)) || User.IsInRole("Administrator"))
+                    {
+                        <ul class="navbar-nav list-group-horizontal floatRight">
+                            <li class="nav-item ml-1 floatRight">
+                                <form method="post" class="commentOptionsAlign" asp-action="DeleteComment" asp-route-commentId="@subComment.Id" asp-route-postId="@Model.Id">
+                                    <a class="nav-link" asp-controller="Home" asp-action="EditComment" asp-route-commentId="@subComment.Id" asp-route-postId="@Model.Id"> Edit </a>
+
+                                    <span class="floatRight ml-1" id="confirmDeleteSpan_@subComment.Id" style="display:none">
+                                        <span>Are you sure you want to delete?</span>
+                                        <button class="btn btn-link text-danger" type="submit">Yes</button>
+                                        <a href="#" class="btn btn-link" onclick="confirmDelete('@subComment.Id', false)">No</a>
+                                    </span>
+                                    <span class="nav-link" id="deleteSpan_@subComment.Id">
+                                        <a class="btn btn-link nav-item ml-1 text-decoration-none" onclick="confirmDelete('@subComment.Id', true)">Delete</a>
+                                    </span>
+                                </form>
+                            </li>
+                            <li class="nav-item ml-1 floatRight "><a class="nav-link commentInfo">[ @subComment.CreationDate /  @subComment.UserName.Substring(0, subComment.UserName.LastIndexOf("@")) ]</a></li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav list-group-horizontal floatRight">
+                            <li class="nav-item ml-1"><a class="nav-link commentInfo">[ @subComment.CreationDate /  @subComment.UserName.Substring(0, subComment.UserName.LastIndexOf("@")) ]</a></li>
+                        </ul>
+                    }
+                }
+            </div>
+            <div class="subCommentIndentation">
+                @{
+                await Html.RenderPartialAsync("_MainComment", new CommentViewModel { PostId = Model.Id, MainCommentId = comment.Id });
+                }
+            </div>
+        }
+    </div>
+
+</div>
+@section Scripts {
+    <script src="~/js/scripts.js"></script>
+}
